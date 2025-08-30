@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { prisma } = require("../lib/prismaClient");
+const prisma = require("../lib/prismaClient");
 const ACCEPTABLE_CLICK_RANGE = 20;
 
 const indexGet = async (req, res, next) => {
@@ -15,7 +15,7 @@ const indexGet = async (req, res, next) => {
       if (err) {
         next(err);
       }
-      res.json({ token });
+      res.json({ token, characters: remainingCharacters });
     }
   );
 };
