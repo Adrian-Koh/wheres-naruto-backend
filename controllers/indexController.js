@@ -42,7 +42,13 @@ const indexPost = (req, res, next) => {
 
           if (remainingCharacters.length === 0) {
             // game complete
-            res.json({ result: "complete", message: "success" });
+            const startTimestamp = new Date(authData.startTime).getTime();
+            const currentTimestamp = Date.now();
+            const timeTakenMs = currentTimestamp - startTimestamp;
+            res.json({
+              result: "complete",
+              message: `success, took ${timeTakenMs / 1000}s`,
+            });
           } else {
             jwt.sign(
               {
