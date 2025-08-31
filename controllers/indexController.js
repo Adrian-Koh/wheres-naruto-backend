@@ -30,6 +30,7 @@ const indexPost = (req, res, next) => {
         const selectedCharacter = await prisma.getCharacter(character);
         const xDistance = Math.abs(selectedCharacter.x - Number(x));
         const yDistance = Math.abs(selectedCharacter.y - Number(y));
+
         if (
           xDistance < ACCEPTABLE_CLICK_RANGE &&
           yDistance < ACCEPTABLE_CLICK_RANGE
@@ -41,7 +42,7 @@ const indexPost = (req, res, next) => {
 
           if (remainingCharacters.length === 0) {
             // game complete
-            res.json({ message: "success" });
+            res.json({ result: "complete", message: "success" });
           } else {
             jwt.sign(
               {
@@ -55,12 +56,15 @@ const indexPost = (req, res, next) => {
                 if (err) {
                   next(err);
                 }
-                res.json({ token });
+                res.json({ result: "correct", token });
               }
             );
           }
         } else {
-          res.json({ message: `Wrong position clicked for ${character}` });
+          res.json({
+            result: "false",
+            message: `Wrong position clicked for ${character}`,
+          });
         }
       }
     }
