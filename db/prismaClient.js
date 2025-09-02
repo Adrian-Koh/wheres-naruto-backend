@@ -35,9 +35,21 @@ const insertHighScore = async (playername, scoretime) => {
   return createdHighScore;
 };
 
+const updateHighScoreName = async (scoreId, playername) => {
+  const updatedHighScore = await prisma.highScores.update({
+    where: {
+      id: Number(scoreId),
+    },
+    data: {
+      playername: playername,
+    },
+  });
+};
+
 module.exports = {
   getAllCharacterNames,
   getCharacter,
   getAllHighScores,
   insertHighScore,
+  updateHighScoreName,
 };

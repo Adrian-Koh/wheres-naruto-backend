@@ -61,8 +61,15 @@ const indexPost = (req, res, next) => {
               // user high score is in top 10, ask for name and add to high scores board
               message = `You're in the top 10 high scores, time taken: ${score}s`;
 
+              const randomId = parseInt(Math.random() * 100000);
+              const randomName = "anonymous_" + randomId;
+              const createdScore = await prisma.insertHighScore(
+                randomName,
+                timeTakenMs
+              );
+
               jwt.sign(
-                { timeTakenMs },
+                { scoreId: createdScore.id },
                 process.env.SECRET_KEY,
                 { expiresIn: "1h" },
                 (err, token) => {
@@ -135,14 +142,14 @@ const highScorePost = (req, res, next) => {
     if (err) {
       next(err);
     } else {
-      if (authData.timeTakenMs) {
+      if (authData.scoreId) {
         const { playername } = req.body;
-        const createdScore = await prisma.insertHighScore(
-          playername,
-          authData.timeTakenMs
+        const updatedScore = await prisma.updateHighScoreName(
+          authData.scoreId,
+          playername
         );
-        console.log("createdScore: " + JSON.stringify(createdScore));
-        res.json({ createdScore });
+        console.log("updatedScore: " + JSON.stringify(updatedScore));
+        res.json({ updatedScore });
       }
     }
   });
