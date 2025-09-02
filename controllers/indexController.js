@@ -77,6 +77,7 @@ const indexPost = (req, res, next) => {
                     highScores,
                     isHighScore: true,
                     message: message,
+                    characterPosition: selectedCharacter,
                   });
                 }
               );
@@ -91,6 +92,7 @@ const indexPost = (req, res, next) => {
                 highScores,
                 isHighScore: false,
                 message: message,
+                characterPosition: selectedCharacter,
               });
             }
           } else {
@@ -106,7 +108,11 @@ const indexPost = (req, res, next) => {
                 if (err) {
                   next(err);
                 }
-                res.json({ result: "correct", token });
+                res.json({
+                  result: "correct",
+                  token,
+                  characterPosition: selectedCharacter,
+                });
               }
             );
           }
@@ -121,6 +127,11 @@ const indexPost = (req, res, next) => {
   });
 };
 
+const highScoreGet = async (req, res, next) => {
+  const highScores = await prisma.getAllHighScores();
+  res.json({ highScores });
+};
+
 const highScorePost = (req, res, next) => {
   jwt.verify(req.token, process.env.SECRET_KEY, async (err, authData) => {
     if (err) {
@@ -133,9 +144,10 @@ const highScorePost = (req, res, next) => {
           authData.timeTakenMs
         );
         console.log("createdScore: " + JSON.stringify(createdScore));
+        res.json({ createdScore });
       }
     }
   });
 };
 
-module.exports = { indexGet, indexPost, highScorePost };
+module.exports = { indexGet, indexPost, highScoreGet, highScorePost };
