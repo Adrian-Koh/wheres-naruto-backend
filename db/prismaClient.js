@@ -18,11 +18,12 @@ const getCharacter = async (characterName) => {
   return character;
 };
 
-const getAllHighScores = async () => {
-  const highScores = (await prisma.highScores.findMany({})).sort(
-    (a, b) => a.scoretime - b.scoretime
-  );
-  return highScores;
+const getTopTenHighScores = async () => {
+  const highScores = await prisma.highScores.findMany({});
+  const sortedScores = highScores.sort((a, b) => a.scoretime - b.scoretime);
+  const topTen =
+    sortedScores.length > 10 ? sortedScores.slice(0, 10) : sortedScores;
+  return topTen;
 };
 
 const insertHighScore = async (playername, scoretime) => {
@@ -49,7 +50,7 @@ const updateHighScoreName = async (scoreId, playername) => {
 module.exports = {
   getAllCharacterNames,
   getCharacter,
-  getAllHighScores,
+  getTopTenHighScores,
   insertHighScore,
   updateHighScoreName,
 };

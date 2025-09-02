@@ -51,7 +51,7 @@ const indexPost = (req, res, next) => {
             const timeTakenMs = currentTimestamp - startTimestamp;
 
             const score = timeTakenMs / 1000;
-            const highScores = await prisma.getAllHighScores();
+            const highScores = await prisma.getTopTenHighScores();
 
             let message;
             if (
@@ -67,6 +67,7 @@ const indexPost = (req, res, next) => {
                 randomName,
                 timeTakenMs
               );
+              console.log("createdScore: " + JSON.stringify(createdScore));
 
               jwt.sign(
                 { scoreId: createdScore.id },
@@ -133,7 +134,7 @@ const indexPost = (req, res, next) => {
 };
 
 const highScoreGet = async (req, res, next) => {
-  const highScores = await prisma.getAllHighScores();
+  const highScores = await prisma.getTopTenHighScores();
   res.json({ highScores });
 };
 
