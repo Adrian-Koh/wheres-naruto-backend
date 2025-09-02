@@ -19,7 +19,7 @@ const populateCharacterPositions = async () => {
   const characters = await prisma.character.createMany({
     data: characterPositions,
   });
-  console.log("added characters: " + JSON.stringify(characterPositions));
+  console.log("added characters: " + JSON.stringify(characters));
 };
 
 const listAllCharacters = async () => {

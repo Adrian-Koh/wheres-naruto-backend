@@ -50,8 +50,8 @@ const indexPost = (req, res, next) => {
             const currentTimestamp = Date.now();
             const timeTakenMs = currentTimestamp - startTimestamp;
 
+            const score = timeTakenMs / 1000;
             const highScores = await prisma.getAllHighScores();
-            console.log("highScores: " + JSON.stringify(highScores));
 
             let message;
             if (
@@ -59,9 +59,7 @@ const indexPost = (req, res, next) => {
               timeTakenMs < highScores[9].scoretime
             ) {
               // user high score is in top 10, ask for name and add to high scores board
-              message = `You're in the top 10 high scores, time taken: ${
-                timeTakenMs / 1000
-              }s`;
+              message = `You're in the top 10 high scores, time taken: ${score}s`;
 
               jwt.sign(
                 { timeTakenMs },
@@ -74,6 +72,7 @@ const indexPost = (req, res, next) => {
                   res.json({
                     token,
                     result: "complete",
+                    score,
                     highScores,
                     isHighScore: true,
                     message: message,
@@ -83,12 +82,11 @@ const indexPost = (req, res, next) => {
               );
             } else {
               // don't need to add to high scores board
-              message = `You did not make it in the top 10 high scores, time taken: ${
-                timeTakenMs / 1000
-              }s`;
+              message = `You did not make it in the top 10 high scores, time taken: ${score}s`;
 
               res.json({
                 result: "complete",
+                score,
                 highScores,
                 isHighScore: false,
                 message: message,
