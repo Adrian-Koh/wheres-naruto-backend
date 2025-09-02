@@ -18,4 +18,26 @@ const getCharacter = async (characterName) => {
   return character;
 };
 
-module.exports = { getAllCharacterNames, getCharacter };
+const getAllHighScores = async () => {
+  const highScores = (await prisma.highScores.findMany({})).sort(
+    (a, b) => a.scoretime - b.scoretime
+  );
+  return highScores;
+};
+
+const insertHighScore = async (playername, scoretime) => {
+  const createdHighScore = await prisma.highScores.create({
+    data: {
+      playername,
+      scoretime,
+    },
+  });
+  return createdHighScore;
+};
+
+module.exports = {
+  getAllCharacterNames,
+  getCharacter,
+  getAllHighScores,
+  insertHighScore,
+};

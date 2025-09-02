@@ -5,5 +5,6 @@ const { verifyToken } = require("../lib/jwtUtils");
 
 indexRouter.get("/", indexController.indexGet);
 indexRouter.post("/", verifyToken, indexController.indexPost);
+indexRouter.post("/score", verifyToken, indexController.highScorePost);
 
 module.exports = indexRouter;

@@ -1,11 +1,15 @@
 const jwt = require("jsonwebtoken");
-const prisma = require("../lib/prismaClient");
+const prisma = require("../db/prismaClient");
 const ACCEPTABLE_CLICK_RANGE = 20;
 
 const indexGet = async (req, res, next) => {
   const startTime = new Date();
   const foundCharacters = [];
-  const remainingCharacters = await prisma.getAllCharacterNames();
+  let tmp = await prisma.getAllCharacterNames();
+  //TODO: restore to full list, testing for now, using fewer characters
+  let remainingCharacters = [];
+  remainingCharacters.push(tmp[0]);
+  remainingCharacters.push(tmp[1]);
 
   jwt.sign(
     { startTime, foundCharacters, remainingCharacters },
@@ -45,10 +49,50 @@ const indexPost = (req, res, next) => {
             const startTimestamp = new Date(authData.startTime).getTime();
             const currentTimestamp = Date.now();
             const timeTakenMs = currentTimestamp - startTimestamp;
-            res.json({
-              result: "complete",
-              message: `success, took ${timeTakenMs / 1000}s`,
-            });
+
+            const highScores = await prisma.getAllHighScores();
+            console.log("highScores: " + JSON.stringify(highScores));
+
+            let message;
+            if (
+              highScores.length < 10 ||
+              timeTakenMs < highScores[9].scoretime
+            ) {
+              // user high score is in top 10, ask for name and add to high scores board
+              message = `You're in the top 10 high scores, time taken: ${
+                timeTakenMs / 1000
+              }s`;
+
+              jwt.sign(
+                { timeTakenMs },
+                process.env.SECRET_KEY,
+                { expiresIn: "1h" },
+                (err, token) => {
+                  if (err) {
+                    next(err);
+                  }
+                  res.json({
+                    token,
+                    result: "complete",
+                    highScores,
+                    isHighScore: true,
+                    message: message,
+                  });
+                }
+              );
+            } else {
+              // don't need to add to high scores board
+              message = `You did not make it in the top 10 high scores, time taken: ${
+                timeTakenMs / 1000
+              }s`;
+
+              res.json({
+                result: "complete",
+                highScores,
+                isHighScore: false,
+                message: message,
+              });
+            }
           } else {
             jwt.sign(
               {
@@ -77,4 +121,21 @@ const indexPost = (req, res, next) => {
   });
 };
 
-module.exports = { indexGet, indexPost };
+const highScorePost = (req, res, next) => {
+  jwt.verify(req.token, process.env.SECRET_KEY, async (err, authData) => {
+    if (err) {
+      next(err);
+    } else {
+      if (authData.timeTakenMs) {
+        const { playername } = req.body;
+        const createdScore = await prisma.insertHighScore(
+          playername,
+          authData.timeTakenMs
+        );
+        console.log("createdScore: " + JSON.stringify(createdScore));
+      }
+    }
+  });
+};
+
+module.exports = { indexGet, indexPost, highScorePost };
