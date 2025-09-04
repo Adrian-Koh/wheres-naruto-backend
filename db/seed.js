@@ -2,18 +2,18 @@ const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
 
 const characterPositions = [
-  { name: "Naruto", x: 489, y: 139 },
-  { name: "Sasuke", x: 622, y: 261 },
-  { name: "Sakura", x: 759, y: 237 },
-  { name: "Might Guy", x: 308, y: 88 },
-  { name: "Rock Lee", x: 650, y: 229 },
-  { name: "Jiraiya", x: 528, y: 87 },
-  { name: "Orochimaru", x: 579, y: 144 },
-  { name: "Neji", x: 599, y: 376 },
-  { name: "Kakashi", x: 382, y: 91 },
-  { name: "Hashirama (The First Hokage)", x: 367, y: 173 },
-  { name: "Tobirama (The Second Hokage)", x: 450, y: 173 },
-  { name: "Shikamaru", x: 107, y: 385 },
+  { name: "Naruto", x: 457, y: 132 },
+  { name: "Sasuke", x: 581, y: 244 },
+  { name: "Sakura", x: 708, y: 227 },
+  { name: "Might Guy", x: 287, y: 85 },
+  { name: "Rock Lee", x: 608, y: 217 },
+  { name: "Jiraiya", x: 491, y: 85 },
+  { name: "Orochimaru", x: 539, y: 134 },
+  { name: "Neji", x: 561, y: 355 },
+  { name: "Kakashi", x: 357, y: 87 },
+  { name: "Hashirama (The First Hokage)", x: 343, y: 167 },
+  { name: "Tobirama (The Second Hokage)", x: 422, y: 167 },
+  { name: "Shikamaru", x: 99, y: 364 },
 ];
 const populateCharacterPositions = async () => {
   const characters = await prisma.character.createMany({
@@ -42,4 +42,4 @@ const listAllCharacters = async () => {
   console.log("available characters: " + JSON.stringify(characters));
 };
 
-populateCharacterPositions();
+updateCharacterPositions();
