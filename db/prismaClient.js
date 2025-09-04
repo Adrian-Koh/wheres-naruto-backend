@@ -45,6 +45,7 @@ const updateHighScoreName = async (scoreId, playername) => {
       playername: playername,
     },
   });
+  return updatedHighScore;
 };
 
 module.exports = {
