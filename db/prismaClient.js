@@ -2,11 +2,16 @@ const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
 
 const getAllCharacterNames = async () => {
-  const availableCharacters = await prisma.character.findMany();
+  const availableCharacters = await getAllCharacters();
   const availableCharacterNames = availableCharacters.map(
     (character) => character.name
   );
   return availableCharacterNames;
+};
+
+const getAllCharacters = async () => {
+  const characters = await prisma.character.findMany();
+  return characters;
 };
 
 const getCharacter = async (characterName) => {
@@ -50,6 +55,7 @@ const updateHighScoreName = async (scoreId, playername) => {
 
 module.exports = {
   getAllCharacterNames,
+  getAllCharacters,
   getCharacter,
   getTopTenHighScores,
   insertHighScore,

@@ -43,3 +43,5 @@ const listAllCharacters = async () => {
 };
 
 updateCharacterPositions();
+
+module.exports = { characterPositions };
