@@ -1,5 +1,17 @@
-const { PrismaClient } = require("../generated/prisma");
-const prisma = new PrismaClient();
+require("dotenv").config();
+const { PrismaClient } = require("@prisma/client");
+const databaseUrl =
+  process.env.NODE_ENV === "test"
+    ? process.env.TEST_DATABASE_URL
+    : process.env.DATABASE_URL;
+
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: databaseUrl,
+    },
+  },
+});
 
 const characterPositions = [
   { name: "Naruto", x: 457, y: 132 },
@@ -42,6 +54,6 @@ const listAllCharacters = async () => {
   console.log("available characters: " + JSON.stringify(characters));
 };
 
-updateCharacterPositions();
+populateCharacterPositions();
 
 module.exports = { characterPositions };

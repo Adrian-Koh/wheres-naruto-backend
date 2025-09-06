@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
-    "start": "nodemon app.js"
+    "test": "NODE_ENV=test jest",
+    "start": "NODE_ENV=development nodemon app.js"
   },
   "repository": {
     "type": "git",
