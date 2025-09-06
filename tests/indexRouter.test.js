@@ -9,6 +9,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/", indexRouter);
 
 let token;
+let gameCompleteToken;
 
 test("index route returns list of characters and token", (done) => {
   request(app)
@@ -85,8 +86,31 @@ test("index post all correct character clicks", async () => {
     if (i === characters.length - 1) {
       if (res.body.result !== "complete")
         throw new Error("completing game did not register complete result");
+      gameCompleteToken = res.body.token;
     } else {
       curToken = res.body.token;
     }
+  }
+});
+
+test("high score post updates high scores table", async () => {
+  const randomInt = parseInt(Math.random() * 10000);
+  const playername = `testPlayer${randomInt}`;
+  await request(app)
+    .post("/score")
+    .set("authorization", `Bearer ${gameCompleteToken}`)
+    .send("playername=" + playername);
+
+  const res = await request(app).get("/score").expect("Content-Type", /json/);
+
+  if (!("highScores" in res.body)) throw new Error("missing highScores key");
+  if (
+    res.body.highScores.filter(
+      (highScore) => highScore.playername === playername
+    ).length !== 1
+  ) {
+    throw new Error(
+      "Player name submitted was not included in high scores table"
+    );
   }
 });
