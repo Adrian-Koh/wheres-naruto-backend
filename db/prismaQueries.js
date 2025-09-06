@@ -23,4 +23,9 @@ const clearHighScores = async () => {
   console.log("deletedScores: " + JSON.stringify(deletedScores));
 };
 
+const printAllCharacters = async () => {
+  const characters = await prisma.character.findMany();
+  console.log("available characters: " + JSON.stringify(characters));
+};
+
 printHighScores();

@@ -60,7 +60,6 @@ const indexPost = (req, res, next) => {
                 randomName,
                 timeTakenMs
               );
-              console.log("createdScore: " + JSON.stringify(createdScore));
 
               jwt.sign(
                 { scoreId: createdScore.id },
@@ -137,7 +136,6 @@ const highScorePost = (req, res, next) => {
           authData.scoreId,
           playername
         );
-        console.log("updatedScore: " + JSON.stringify(updatedScore));
         res.json({ updatedScore });
       }
     }

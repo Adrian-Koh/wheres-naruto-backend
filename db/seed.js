@@ -49,11 +49,6 @@ const updateCharacterPositions = async () => {
   }
 };
 
-const listAllCharacters = async () => {
-  const characters = await prisma.character.findMany();
-  console.log("available characters: " + JSON.stringify(characters));
-};
-
 populateCharacterPositions();
 
 module.exports = { characterPositions };

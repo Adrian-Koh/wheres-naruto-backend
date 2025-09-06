@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test jest",
-    "start": "NODE_ENV=development nodemon app.js"
+    "start": "NODE_ENV=development nodemon app.js",
+    "build": "npm install && npx prisma db pull && npx prisma generate"
   },
   "repository": {
     "type": "git",
